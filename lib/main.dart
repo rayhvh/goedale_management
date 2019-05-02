@@ -3,6 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:goedale_management/scoped_model/global_model.dart';
 
+import 'package:goedale_management/pages/orders_page.dart';
+import 'package:goedale_management/pages/settings_page.dart';
+import 'package:goedale_management/pages/stock_page.dart';
+import 'package:goedale_management/pages/add_beer_page.dart';
+
 void main() => runApp(MyApp(GlobalModel()));
 
 class MyApp extends StatelessWidget {
@@ -58,17 +63,39 @@ class _MyHomePageState extends State<MyHomePage> {
         return Scaffold(
           appBar: AppBar(
             title: Text(appBarTitleText),
+              actions:
+              (_page ==0 ) ?
+              <Widget>[
+                // action button
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+                    onPressed:(){
+                      Navigator.push(context, new MaterialPageRoute(builder: (context) => AddBeerPage()));
+                    },
+                    child: Row(
+                      children: <Widget>[
+                        Text('Toevoegen'),
+                        Icon(Icons.add),
+                      ],
+                    ),
+                  ),
+                ),
+              ]
+                  :
+                  <Widget>
+              [],
           ),
           body: PageView(
             children: <Widget>[
               Container(
-                child: ,
+                child: StockPage(),
               ),
               Container(
-                child: ,
+                child: StockPage(),
               ),
               Container(
-                child: ,
+                child: StockPage(),
               ),
             ],
             controller: pageController,
