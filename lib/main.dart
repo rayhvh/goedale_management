@@ -92,10 +92,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: StockPage(),
               ),
               Container(
-                child: StockPage(),
+                child: OrdersPage(),
               ),
               Container(
-                child: StockPage(),
+                child: Container(
+                  color: Colors.red,
+                ),
               ),
             ],
             controller: pageController,
