@@ -84,18 +84,9 @@ class _StockPage extends State<OrdersPage> {
                                                  itemCount: orderItemsSnapshot.data.documents.length,
                                                  itemBuilder: (BuildContext context, int index){
                                                   print("id in orderitemsnap: " +orderItemsSnapshot.data.documents[index].data['beerId']) ;
-
-                                                   stockSnapshot.data.documents.forEach((document) => {
-                                                    print (document.documentID)
-                                                     if(document.documentID == )
-                                                  });
-                                                 /*  var beerDoc = stockSnapshot.data.documents.where((document) =>
-                                                   document.data['id'] ==
-                                                      "139271" );
-
-                                                  // orderItemsSnapshot.data.documents[index].data['beerId']
-                                                   print (beerDoc);
-                                                   print (beerDoc);*/
+                                                   var beerDoc = stockSnapshot.data.documents.firstWhere((document) =>
+                                                   document.data['id'] == orderItemsSnapshot.data.documents[index].data['beerId'] );
+                                                   return Text(orderItemsSnapshot.data.documents[index].data['qty'].toString() + " x " + beerDoc.data['name']);
                                                  },
                                                );
                                              },
