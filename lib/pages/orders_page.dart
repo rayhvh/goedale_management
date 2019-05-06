@@ -65,32 +65,61 @@ class _StockPage extends State<OrdersPage> {
                                         padding: const EdgeInsets.fromLTRB(8.0,0,0,0),
                                         child: Card(
                                           color: Colors.grey[700],
-                                          child: ListTile(
-                                            title: Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: <Widget>[
-                                                Text("Bestelling: " + orderData['orderNr'].toString() + " - $timeOfOrder - Betaald: "),
-                                                Icon((orderData['isPaid']) ? Icons.thumb_up: Icons.thumb_down, color: (orderData['isPaid']) ? Colors.green : Colors.red,),
-                                              ],
-                                            ),
-                                           subtitle: 
-                                            StreamBuilder(
-                                             stream: Firestore.instance.collection('bokaalTables').document(currentTableString).collection('orders').document(ordersSnapshot.data.documents[index].documentID).collection('items').snapshots(),
-                                             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> orderItemsSnapshot){
-                                             //  var beerDoc = stockSnapshot.data.documents.where((document) => document.documentID == ordersSnapshot);
-                                               print(orderItemsSnapshot);
-                                               return ListView.builder(
-                                                 shrinkWrap: true,
-                                                 itemCount: orderItemsSnapshot.data.documents.length,
-                                                 itemBuilder: (BuildContext context, int index){
-                                                  print("id in orderitemsnap: " +orderItemsSnapshot.data.documents[index].data['beerId']) ;
-                                                   var beerDoc = stockSnapshot.data.documents.firstWhere((document) =>
-                                                   document.data['id'] == orderItemsSnapshot.data.documents[index].data['beerId'] );
-                                                   return Text(orderItemsSnapshot.data.documents[index].data['qty'].toString() + " x " + beerDoc.data['name']);
+                                          child: Column(
+                                            children: <Widget>[
+                                              ListTile(
+                                                title: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    Text("Bestelling: " + orderData['orderNr'].toString() + " - $timeOfOrder - Betaald: "),
+                                                    Icon((orderData['isPaid']) ? Icons.thumb_up: Icons.thumb_down, color: (orderData['isPaid']) ? Colors.green : Colors.red,),
+
+                                                  ],
+                                                ),
+                                               subtitle:
+                                                StreamBuilder(
+                                                 stream: Firestore.instance.collection('bokaalTables').document(currentTableString).collection('orders').document(ordersSnapshot.data.documents[index].documentID).collection('items').snapshots(),
+                                                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> orderItemsSnapshot){
+                                                 //  var beerDoc = stockSnapshot.data.documents.where((document) => document.documentID == ordersSnapshot);
+                                                   print(orderItemsSnapshot);
+                                                   return ListView.builder(
+                                                     shrinkWrap: true,
+                                                     itemCount: orderItemsSnapshot.data.documents.length,
+                                                     itemBuilder: (BuildContext context, int index){
+
+                                                       var beerDoc = stockSnapshot.data.documents.firstWhere((document) =>
+                                                       document.data['id'] == orderItemsSnapshot.data.documents[index].data['beerId'] );
+                                                       return Text(orderItemsSnapshot.data.documents[index].data['qty'].toString() + " x " + beerDoc.data['name']);
+                                                     },
+                                                   );
                                                  },
-                                               );
-                                             },
-                                           )
+                                               )
+                                              ),
+                                              ButtonTheme.bar(
+                                                child: ButtonBar(
+                                                  children: <Widget>[
+                                                    IconButton(
+                                                      onPressed: () async {
+                                                        Firestore.instance.runTransaction(
+                                                                (Transaction transaction) async {
+                                                              DocumentReference reference =
+                                                              Firestore.instance.collection('bokaalTables')
+                                                                  .document(currentTableString).collection('orders')
+                                                                  .document(ordersSnapshot.data.documents[index].documentID);
+                                                              var ref = await reference.get();
+                                                              print(ref.data);
+                                                              await reference.delete().then((res) async => {
+
+                                                              });}
+                                                        );
+
+                                                        },
+                                                      icon: Icon(Icons.delete),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         ),
                                       ),
