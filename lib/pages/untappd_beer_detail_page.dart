@@ -32,38 +32,39 @@ class _UntappdBeerDetailPageState extends State<UntappdBeerDetailPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(_beer.name)),
-      body: Row(
-        children: <Widget>[
-          Expanded(
-            child: FutureBuilder(
-                future: _untappdBeer,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.data == null) {
-                    return Container(child: Center(child: CircularProgressIndicator()));
-                  } else {
+      body: SingleChildScrollView(
+        child: Container(
+          child: FutureBuilder(
+              future: _untappdBeer,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.data == null) {
+                  return Container(child: Center(child: CircularProgressIndicator()));
+                } else {
 
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Image.network(snapshot.data.label.largeUrl, height: 200,),
-                                      Text(_beer.name, style: Theme.of(context).textTheme.title),
-                                      Text(snapshot.data.brewery), // via future untappd because we can only have 100 calls a hour. it only gets calls and info of beer at details
-                                      Text(_beer.style.name),
-                                      Text(_beer.abv.toString()+"%"),
-                                      Text("Rating: " + snapshot.data.rating.toString()),
-                                    ],
-                                  ),
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Image.network(snapshot.data.label.largeUrl, height: 200,),
+                                    Text(_beer.name, style: Theme.of(context).textTheme.title),
+                                    Text(snapshot.data.brewery), // via future untappd because we can only have 100 calls a hour. it only gets calls and info of beer at details
+                                    Text(_beer.style.name),
+                                    Text(_beer.abv.toString()+"%"),
+                                    Text("Rating: " + snapshot.data.rating.toString()),
+                                  ],
                                 ),
                               ),
-                              Expanded(
+                            ),
+                            Container(
+                              
+                              child: Flexible(
                                 child: Column(
                                   children: <Widget>[
                                     TextFormField(
@@ -142,40 +143,40 @@ class _UntappdBeerDetailPageState extends State<UntappdBeerDetailPage>{
                                         child: const Text('Toevoegen')),
                                   ],
                                 ),
-                              )
+                              ),
+                            )
+                          ],
+                        ),
+                        Container(
+                          child: Column(
+                            children: <Widget>[
+                              Text("Beschrijving",style: Theme.of(context).textTheme.title),
+                              TextFormField(
+                                controller: descriptionController,
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                              ),
+                            //  Text(_beer.description),
+                              Text("Foto's",style: Theme.of(context).textTheme.title),
+
+                              Container( height: 200,
+                                child: ListView.builder(scrollDirection: Axis.horizontal, itemCount: snapshot.data.beerPhotos.length, itemBuilder: (BuildContext context, int index){
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Image.network(snapshot.data.beerPhotos[index].photo_md, height: 200,),
+                                  );
+                                },),
+                              ),
+
                             ],
                           ),
-                          Expanded(
-                            child: Column(
-                              children: <Widget>[
-                                Text("Beschrijving",style: Theme.of(context).textTheme.title),
-                                TextFormField(
-                                  controller: descriptionController,
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: null,
-                                ),
-                              //  Text(_beer.description),
-                                Text("Foto's",style: Theme.of(context).textTheme.title),
-
-                                Container( height: 200,
-                                  child: ListView.builder(scrollDirection: Axis.horizontal, itemCount: snapshot.data.beerPhotos.length, itemBuilder: (BuildContext context, int index){
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Image.network(snapshot.data.beerPhotos[index].photo_md, height: 200,),
-                                    );
-                                  },),
-                                ),
-
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                }),
-          )
-        ],
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              }),
+        ),
       ),
     );
   }
