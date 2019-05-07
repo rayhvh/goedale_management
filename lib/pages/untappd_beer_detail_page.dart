@@ -70,20 +70,27 @@ class _UntappdBeerDetailPageState extends State<UntappdBeerDetailPage>{
                                       keyboardType: TextInputType.number,
                                       controller: amountController,
                                       decoration: const InputDecoration(
-                                          hintText: "Hoeveelheid"),
+                                        icon: Icon(Icons.library_add),
+                                          hintText: "In cijfers",
+                                          labelText: 'Hoeveelheid',
+                                      ),
                                     ),
                                     TextFormField(
                                       keyboardType: TextInputType.number,
                                       controller: priceController,
                                       decoration:
-                                      const InputDecoration(hintText: "Prijs"),
+                                      const InputDecoration(hintText: "In cijfers met punten",
+                                      icon: Icon(Icons.euro_symbol),
+                                        labelText: 'Prijs', ),
                                     ),
                                     TextFormField(
                                       keyboardType: TextInputType.multiline,
                                       maxLines: null,
                                       controller: tasteDescriptionController,
                                       decoration:
-                                      const InputDecoration(hintText: "Smaak omschrijving"),
+                                      const InputDecoration(hintText: "Een omschrijving voor het zoeken",
+                                      icon: Icon(Icons.description),
+                                        labelText: 'Smaakomschrijving', ),
                                     ),
                                     RaisedButton(
                                         onPressed: () {
@@ -106,7 +113,7 @@ class _UntappdBeerDetailPageState extends State<UntappdBeerDetailPage>{
                                                     "mediumUrl": _beer.label.iconUrl,
                                                     "largeUrl": snapshot.data.label.largeUrl,
                                                   },
-                                                  "price": (priceController.text == '') ? 1 : int.parse(priceController.text) ,
+                                                  "price": (priceController.text == '') ? 1 : double.parse(priceController.text) ,
                                                   "amount": (amountController.text == '') ? 1 : int.parse(amountController.text),
                                                 });
                                               });
