@@ -51,7 +51,7 @@ class _FirestoreBeerdetailState extends State<FirestoreBeerdetail> {
           Firestore.instance.collection('bokaalStock').document(
               widget.beerdocument.data['id']);
           await reference.updateData({
-            "price": int.parse(priceController.text),
+            "price": double.parse(priceController.text),
             "desc": descriptionController.text,
             'tasteDesc': tasteDescriptionController.text,
           });
@@ -230,26 +230,26 @@ class _FirestoreBeerdetailState extends State<FirestoreBeerdetail> {
             Flexible(
               child: Column(
                 children: <Widget>[
-                  Text("Prijs",
-                      style: Theme.of(context).textTheme.title),
+
                   Row(
                     children: <Widget>[
-                      Text('€'),
+
                       Flexible(
                         child: TextFormField(
                           keyboardType: TextInputType.numberWithOptions(),
                           maxLines: 1,
                           controller: priceController,
+                          decoration: InputDecoration(hintText: "Prijs punten gescheiden", labelText: "Prijs", icon: Icon(Icons.euro_symbol)),
                         ),
                       ),
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(5.0),
+                    padding: const EdgeInsets.fromLTRB(0,15,0,0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("Aantal:",
+                        Text("Voorraad aantal: ",
                             style: Theme.of(context).textTheme.title),
                         Text(widget.beerdocument.data['amount'].toString(),style: Theme.of(context).textTheme.title),
                       ],
@@ -258,7 +258,7 @@ class _FirestoreBeerdetailState extends State<FirestoreBeerdetail> {
                   Row(
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.fromLTRB(8,0,8,0),
                         child: RaisedButton(
                           onPressed: (){
                             updateAmount(-int.parse(addOrRemoveController.text));
@@ -271,7 +271,8 @@ class _FirestoreBeerdetailState extends State<FirestoreBeerdetail> {
                           controller: addOrRemoveController,
                           keyboardType: TextInputType.numberWithOptions(),
                           decoration: InputDecoration(
-                            hintText: "Aantal erbij of eraf.."),
+                            hintText: "Aantal erbij of eraf..",
+                          labelText: "Bijvoegen of eraf halen"),
                         ),
                       ),
                       Padding(
