@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:goedale_management/widgets/starrating_widget.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'package:goedale_management/scoped_model/global_model.dart';
+import 'package:goedale_management/services/untappd.dart';
+import 'package:goedale_management/models/beer_models.dart';
 
 class FirestoreBeerdetail extends StatefulWidget {
   final DocumentSnapshot beerdocument;
@@ -16,16 +16,17 @@ class FirestoreBeerdetail extends StatefulWidget {
 }
 
 class _FirestoreBeerdetailState extends State<FirestoreBeerdetail> {
-//  String tableNumber;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  //Future<Beer> _untappdBeer;
 
   TextEditingController descriptionController = TextEditingController();
   TextEditingController tasteDescriptionController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController addOrRemoveController = TextEditingController();
 
-
   @override
   void initState(){
+
     super.initState();
     descriptionController.text =  widget.beerdocument.data['desc'];
     tasteDescriptionController.text =  widget.beerdocument.data['tasteDesc'];
@@ -79,6 +80,7 @@ class _FirestoreBeerdetailState extends State<FirestoreBeerdetail> {
       Navigator.pop(context);
     }
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.beerdocument.data['name']),
         actions: <Widget>[
@@ -175,6 +177,8 @@ class _FirestoreBeerdetailState extends State<FirestoreBeerdetail> {
                           child: RaisedButton(
                             onPressed: (){
                               updateAmount(-int.parse(addOrRemoveController.text));
+                              final snackBar = SnackBar(content: Text(addOrRemoveController.text + " verwijderd!"),backgroundColor: Colors.red,);
+                              _scaffoldKey.currentState.showSnackBar(snackBar);
                             },
                             child: Icon(Icons.remove),
                           ),
@@ -193,6 +197,8 @@ class _FirestoreBeerdetailState extends State<FirestoreBeerdetail> {
                           child: RaisedButton(
                             onPressed: (){
                               updateAmount(int.parse(addOrRemoveController.text));
+                              final snackBar = SnackBar(content: Text(addOrRemoveController.text + " toegevoegd!"),backgroundColor: Colors.red,);
+                              _scaffoldKey.currentState.showSnackBar(snackBar);
                             },
                             child: Icon(Icons.add),
                           ),
@@ -243,7 +249,7 @@ class _FirestoreBeerdetailState extends State<FirestoreBeerdetail> {
                         }
                     );
                   },
-                ),*/ //todo update photo's using untappd.
+                ),*/
                 StreamBuilder(
                   stream: Firestore.instance
                       .collection('bokaalStock')
@@ -271,6 +277,43 @@ class _FirestoreBeerdetailState extends State<FirestoreBeerdetail> {
                     );
                   },
                 ),
+                Container(
+                  child: RaisedButton(
+                      onPressed: () async {
+                        Beer untappdBeer = await UntappdService().findBeerById( widget.beerdocument.data['id']).then((beer){
+                          Firestore.instance.runTransaction(
+                                  (Transaction transaction)  {
+                                CollectionReference reference =
+                                Firestore.instance.collection("bokaalStock").document(widget.beerdocument.data['id']).collection("beerPhotos");
+                                reference.getDocuments().then((beerPhotoSnap) {
+                                  for (DocumentSnapshot documentPhoto in beerPhotoSnap.documents){
+                                    documentPhoto.reference.delete();
+                                  }
+                                }).then((_){
+                                  for(var i = 0; i < beer.beerPhotos.length; i++){
+                                    reference.add({
+                                      "photo_sm": beer.beerPhotos[i].photo_sm,
+                                      "photo_md": beer.beerPhotos[i].photo_md,
+                                      "photo_og": beer.beerPhotos[i].photo_og,
+                                    });
+                                  }
+                                }).then((_){
+                                  Firestore.instance.collection('bokaalStock').document(widget.beerdocument.data['id']).updateData(
+                                    {
+                                      'rating': beer.rating
+                                    }
+                                  );
+                                  final snackBar = SnackBar(content: Text("Foto's en rating bijgewerkt!"),backgroundColor: Colors.red,);
+                                 _scaffoldKey.currentState.showSnackBar(snackBar);
+                                });
+                              }
+                          );
+                        }) ;
+
+                      },
+                    child: Text("Update foto's en rating"),
+                  )
+                )
               ],
             ),
           ),

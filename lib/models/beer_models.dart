@@ -69,10 +69,14 @@ class Beer {
 
 class BeerPhoto{
   final String photo_md;
-  BeerPhoto({this.photo_md});
+  final String photo_sm;
+  final String photo_og;
+  BeerPhoto({this.photo_md, this.photo_sm, this.photo_og});
   factory BeerPhoto.fromJson(Map<String, dynamic> json){
     return BeerPhoto(
-        photo_md: json['photo']['photo_img_md']
+        photo_sm: json['photo']['photo_img_sm'],
+        photo_md: json['photo']['photo_img_md'],
+        photo_og: json['photo']['photo_img_og'],
     );
   }
 }

@@ -130,7 +130,9 @@ class _UntappdBeerDetailPageState extends State<UntappdBeerDetailPage>{
                                                }).then((_){
                                                    for(var i = 0; i < snapshot.data.beerPhotos.length; i++){
                                                       reference.add({
+                                                       "photo_sm": snapshot.data.beerPhotos[i].photo_sm,
                                                        "photo_md": snapshot.data.beerPhotos[i].photo_md,
+                                                       "photo_og": snapshot.data.beerPhotos[i].photo_og,
                                                      });
                                                    }
                                                  });
