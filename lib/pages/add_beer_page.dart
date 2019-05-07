@@ -29,7 +29,8 @@ class _AddBeerPageState extends State<AddBeerPage> {
             child: TextFormField(
               style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                hintText: "Zoek naar een bier..",
+                icon: Icon(Icons.search),
+                hintText: "Naar een bier", labelText: 'Zoeken',
                 fillColor: Colors.black,
                 filled: true,
               ),
